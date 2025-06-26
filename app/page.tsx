@@ -433,17 +433,17 @@ const slides = [
           ],
           icon: Database,
         },
-        {
-          name: "Benchmark Testing",
-          description:
-            "Quantitative performance measurement across key metrics",
-          activities: [
-            "Designed 100+ test prompts across categories",
-            "Measured response times and accuracy",
-            "Evaluated multilingual capabilities",
-          ],
-          icon: Cpu,
-        },
+        // {
+        //   name: "Benchmark Testing",
+        //   description:
+        //     "Quantitative performance measurement across key metrics",
+        //   activities: [
+        //     "Designed 100+ test prompts across categories",
+        //     "Measured response times and accuracy",
+        //     "Evaluated multilingual capabilities",
+        //   ],
+        //   icon: Cpu,
+        // },
         {
           name: "API Analysis",
           description: "Technical evaluation of integration requirements",
@@ -454,32 +454,32 @@ const slides = [
           ],
           icon: Code,
         },
-        {
-          name: "User Testing",
-          description: "Qualitative assessment of real-world performance",
-          activities: [
-            "Gathered feedback from 20 test users",
-            "Compared output quality",
-            "Evaluated response relevance",
-          ],
-          icon: Users,
-        },
-        {
-          name: "Integration Planning",
-          description: "Developed unified interface strategy",
-          activities: [
-            "Designed abstraction layer",
-            "Implemented fallback mechanisms",
-            "Optimized for mobile performance",
-          ],
-          icon: Settings,
-        },
+        // {
+        //   name: "User Testing",
+        //   description: "Qualitative assessment of real-world performance",
+        //   activities: [
+        //     "Gathered feedback from 20 test users",
+        //     "Compared output quality",
+        //     "Evaluated response relevance",
+        //   ],
+        //   icon: Users,
+        // },
+        // {
+        //   name: "Integration Planning",
+        //   description: "Developed unified interface strategy",
+        //   activities: [
+        //     "Designed abstraction layer",
+        //     "Implemented fallback mechanisms",
+        //     "Optimized for mobile performance",
+        //   ],
+        //   icon: Settings,
+        // },
       ],
       outcomes: [
-        "Identified optimal model for each use case",
-        "Developed performance benchmarks",
-        "Created integration best practices",
-        "Established fallback strategies",
+        // "Identified optimal model for each use case",
+        // "Developed performance benchmarks",
+        // "Created integration best practices",
+        // "Established fallback strategies",
       ],
     },
   },
@@ -533,49 +533,36 @@ const slides = [
       snippet: {
         title: "AI Service Integration",
         language: "javascript",
-        code: `// AI Service Integration with Error Handling
-const generateResponse = async (prompt, model = 'gemini') => {
+        code: `const genAI = new GoogleGenerativeAI(process.env.EXPO_PUBLIC_GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+// const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+export async function* streamMessage(message: string) {
   try {
-    // Show loading state
-    setLoading(true);
-    
-    // Make API call to selected AI provider
-    const response = await fetch(\`/api/\${model}\`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': \`Bearer \${apiKey}\`
-      },
-      body: JSON.stringify({ 
-        prompt,
-        max_tokens: 1000,
-        temperature: 0.7
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(\`API Error: \${response.status}\`);
+    if (!process.env.EXPO_PUBLIC_GEMINI_API_KEY) {
+      throw new Error('API key is not configured');
     }
-    
-    const data = await response.json();
-    
-    // Save response to local database
-    await saveToDatabase({
-      prompt,
-      response: data.text,
-      model,
-      timestamp: new Date().toISOString()
-    });
-    
-    return data;
+
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    const text = response.text();
+
+    // Simulate streaming by chunking the text
+    const words = text.split(' ');
+    for (const word of words) {
+      yield word + ' ';
+      // Add a small delay to simulate streaming
+      await new Promise((resolve) => setTimeout(resolve, 40)); // 40ms delay
+      // await new Promise((resolve) => resolve);
+    }
   } catch (error) {
-    console.error('AI API Error:', error);
-    // Fallback to cached response if available
-    return await getCachedResponse(prompt);
-  } finally {
-    setLoading(false);
+    console.error('Error streaming message:', error);
+    if (error instanceof Error) {
+      throw new Error(Failed to stream message: ${"error.message"});
+    }
+    throw new Error('An unexpected error occurred');
   }
-};`,
+}`,
       },
     },
   },
@@ -590,62 +577,109 @@ const generateResponse = async (prompt, model = 'gemini') => {
       snippet: {
         title: "SQLite Database Setup",
         language: "javascript",
-        code: `// SQLite Database Configuration
-import * as SQLite from 'expo-sqlite';
+        code: `const databaseCode = import { Chat, Message, Role } from '@/utils/Interfaces';
+import { SQLiteDatabase } from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
 
-const db = SQLite.openDatabase('aiassistant.db');
+export async function migrateDbIfNeeded(db: SQLiteDatabase) {
+  // Log DB path for debugging
+  // console.log('Log DB path for debugging: ', FileSystem.documentDirectory);
 
-// Initialize database with proper schema
-const initDatabase = () => {
-  db.transaction(tx => {
-    // Conversations table
-    tx.executeSql(
-      \`CREATE TABLE IF NOT EXISTS conversations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT NOT NULL,
-        message TEXT NOT NULL,
-        response TEXT NOT NULL,
-        model TEXT DEFAULT 'gemini',
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users (id)
-      );\`
-    );
-    
-    // Generated images table
-    tx.executeSql(
-      \`CREATE TABLE IF NOT EXISTS generated_images (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT NOT NULL,
-        prompt TEXT NOT NULL,
-        image_url TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      );\`
-    );
-    
-    // User preferences table
-    tx.executeSql(
-      \`CREATE TABLE IF NOT EXISTS user_preferences (
-        user_id TEXT PRIMARY KEY,
-        preferred_model TEXT DEFAULT 'gemini',
-        theme TEXT DEFAULT 'light',
-        language TEXT DEFAULT 'en'
-      );\`
-    );
-  });
+  const DATABASE_VERSION = 1;
+  let result = await db.getFirstAsync<{ user_version: number }>(
+    'PRAGMA user_version'
+  );
+
+  let currentDbVersion = result?.user_version ?? 0;
+
+  if (currentDbVersion >= DATABASE_VERSION) {
+    return;
+  }
+  if (currentDbVersion === 0) {
+    const result = await db.execAsync(\`
+PRAGMA journal_mode = 'wal';
+ 
+CREATE TABLE chats (
+  id INTEGER PRIMARY KEY NOT NULL, 
+  title TEXT NOT NULL
+);
+
+CREATE TABLE messages (
+  id INTEGER PRIMARY KEY NOT NULL, 
+  chat_id INTEGER NOT NULL, 
+  content TEXT, 
+  imageUrl TEXT, 
+  role TEXT, 
+  prompt TEXT, 
+  FOREIGN KEY (chat_id) REFERENCES chats (id) ON DELETE CASCADE
+);
+\`);
+
+    currentDbVersion = 1;
+  }
+  // if (currentDbVersion === 1) {
+  //   Add more migrations
+  // }
+
+  await db.execAsync(\`PRAGMA user_version = \${DATABASE_VERSION}\`);
+}
+
+export const addChat = async (db: SQLiteDatabase, title: string) => {
+  return await db.runAsync('INSERT INTO chats (title) VALUES (?)', title);
 };
 
-// Save conversation to database
-const saveConversation = (userId, message, response, model) => {
-  return new Promise((resolve, reject) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'INSERT INTO conversations (user_id, message, response, model) VALUES (?, ?, ?, ?)',
-        [userId, message, response, model],
-        (_, result) => resolve(result),
-        (_, error) => reject(error)
-      );
-    });
-  });
+export const getChats = async (db: SQLiteDatabase) => {
+  return await db.getAllAsync<Chat>('SELECT * FROM chats');
+};
+
+export const getMessages = async (
+  db: SQLiteDatabase,
+  chatId: number
+): Promise<Message[]> => {
+  return (
+    await db.getAllAsync<Message>(
+      'SELECT * FROM messages WHERE chat_id = ?',
+      chatId
+    )
+  ).map((message) => ({
+    ...message,
+    role: '' + message.role === 'bot' ? Role.Bot : Role.User,
+  }));
+};
+
+export const addMessage = async (
+  db: SQLiteDatabase,
+  chatId: number,
+  { content, role, imageUrl, prompt }: Message
+) => {
+  return await db.runAsync(
+    'INSERT INTO messages (chat_id, content, role, imageUrl, prompt) VALUES (?, ?, ?, ?, ?)',
+    chatId,
+    content,
+    role === Role.Bot ? 'bot' : 'user',
+    imageUrl || '',
+    prompt || ''
+  );
+};
+
+export const deleteChat = async (db: SQLiteDatabase, chatId: number) => {
+  return await db.runAsync('DELETE FROM chats WHERE id = ?', chatId);
+};
+
+export const deleteChatAll = async (db: SQLiteDatabase) => {
+  return await db.runAsync('DELETE FROM chats');
+};
+
+export const renameChat = async (
+  db: SQLiteDatabase,
+  chatId: number,
+  title: string
+) => {
+  return await db.runAsync(
+    'UPDATE chats SET title = ? WHERE id = ?',
+    title,
+    chatId
+  );
 };`,
       },
     },
@@ -1937,7 +1971,7 @@ export default function AIAssistantPresentation() {
           </div>
         );
 
-      case "auth":
+      case "methodology":
         return (
           <div className="space-y-10">
             <motion.div
@@ -1950,74 +1984,80 @@ export default function AIAssistantPresentation() {
                 {slide.title}
               </h2>
               <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              <div className="bg-green-50 p-4 rounded-lg">
+              <div className="bg-indigo-50 p-4 rounded-lg">
                 <p className="text-base text-gray-700">{slide.description}</p>
               </div>
             </motion.div>
 
-            <div className="grid grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Card className="p-6 hover:shadow-xl transition-all duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-green-600">
-                      Key Features
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {slide.content.features.map(
-                        (feature: string, index: number) => (
-                          <li
-                            key={index}
-                            className="flex items-start space-x-2"
-                          >
-                            <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-700">
-                              {feature}
-                            </span>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Card className="p-6 hover:shadow-xl transition-all duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-green-600">
-                      Benefits
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {slide.content.benefits.map(
-                        (benefit: string, index: number) => (
-                          <li
-                            key={index}
-                            className="flex items-start space-x-2"
-                          >
-                            <Star className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-700">
-                              {benefit}
-                            </span>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
+            <div className="space-y-8">
+              {slide.content.phases.map((phase: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300">
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start space-x-4">
+                        <phase.icon className="w-10 h-10 text-indigo-600 mt-1 flex-shrink-0" />
+                        <div className="space-y-3">
+                          <h3 className="text-xl font-bold text-indigo-600">
+                            {phase.name}
+                          </h3>
+                          <p className="text-base text-gray-700">
+                            {phase.description}
+                          </p>
+                          <ul className="space-y-2">
+                            {phase.activities.map(
+                              (activity: string, activityIndex: number) => (
+                                <li
+                                  key={activityIndex}
+                                  className="flex items-start space-x-2"
+                                >
+                                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm text-gray-700">
+                                    {activity}
+                                  </span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Card className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200">
+                <CardHeader>
+                  <CardTitle className="text-lg text-indigo-600">
+                    {/* Key Outcomes */}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {slide.content.outcomes.map(
+                      (outcome: string, index: number) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <Lightbulb className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">
+                            {outcome}
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         );
 
