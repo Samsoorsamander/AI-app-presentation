@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
 
 const slides = [
   {
@@ -53,6 +54,7 @@ const slides = [
       university: "Shaikh Zayed University",
       department: "Computer Science Faculty - Information System Department",
       year: "2025",
+      instructor: "Naqibullah Nawid",
     },
   },
   {
@@ -1190,68 +1192,32 @@ const AuthenticatedApp = () => {
   },
   {
     id: 26,
-    title: "Team Contributions",
-    subtitle: "Individual Member Achievements",
-    type: "team",
+    title: "App Screenshots",
+    subtitle: "User Interface Showcase",
+    type: "screenshots",
     description:
-      "Each team member brought unique skills and made significant contributions to the project's success. Our collaborative approach ensured comprehensive coverage of all technical and design aspects.",
+      "Here are some screenshots of our AI Assistant application showcasing the user interface and key features.",
     content: {
-      members: [
-        {
-          name: "Samsoor Samander",
-          role: "Project Lead & Backend Developer",
-          contributions: [
-            "System architecture design",
-            "AI API integration",
-            "Database schema design",
-          ],
-        },
-        {
-          name: "Hussain Hamim",
-          role: "Frontend Developer",
-          contributions: [
-            "React Native UI development",
-            "User experience design",
-            "Cross-platform optimization",
-          ],
-        },
-        {
-          name: "Haroonullah Nikzad",
-          role: "AI Integration Specialist",
-          contributions: [
-            "AI model integration",
-            "Performance optimization",
-            "API management",
-          ],
-        },
-        {
-          name: "Noor Mohammad",
-          role: "Mobile Developer",
-          contributions: [
-            "Native functionality",
-            "Device integration",
-            "Performance testing",
-          ],
-        },
-        {
-          name: "Mohammad Bilal",
-          role: "Security & Authentication",
-          contributions: [
-            "Clerk integration",
-            "Security implementation",
-            "User management",
-          ],
-        },
-        {
-          name: "Ashiqullah",
-          role: "Quality Assurance & Testing",
-          contributions: [
-            "Testing strategy",
-            "Bug tracking",
-            "User acceptance testing",
-          ],
-        },
-      ],
+      image1: {
+        src: "/assets/shan1.jpg",
+        caption: "Chat Interface",
+      },
+      image2: {
+        src: "@/assets/shan2.jpg",
+        caption: "Image Generation",
+      },
+      image3: {
+        src: "/assets/shan3.jpg",
+        caption: "Settings Screen",
+      },
+      image4: {
+        src: "/assets/shan4.jpg",
+        caption: "Multi-AI Selection",
+      },
+      image5: {
+        src: "/assets/shan5.jpg",
+        caption: "Dark Mode",
+      },
     },
   },
   {
@@ -1455,6 +1421,14 @@ export default function AIAssistantPresentation() {
               <div className="text-lg text-gray-700 space-y-1">
                 <p className="font-semibold">{slide.content.university}</p>
                 <p>{slide.content.department}</p>
+                <div className="flex justify-center">
+                  <Badge
+                    variant="default"
+                    className="text-lg px-4 py-2 bg-purple-600 text-white"
+                  >
+                    Instructor: {slide.content.instructor}
+                  </Badge>
+                </div>
                 <p className="text-blue-600 font-bold">{slide.content.year}</p>
               </div>
             </motion.div>
@@ -2752,7 +2726,7 @@ export default function AIAssistantPresentation() {
           </div>
         );
 
-      case "team":
+      case "screenshots":
         return (
           <div className="space-y-10">
             <motion.div
@@ -2765,58 +2739,144 @@ export default function AIAssistantPresentation() {
                 {slide.title}
               </h2>
               <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              <div className="bg-green-50 p-4 rounded-lg">
+              <div className="bg-indigo-50 p-4 rounded-lg">
                 <p className="text-base text-gray-700">{slide.description}</p>
               </div>
             </motion.div>
 
-            <div className="grid grid-cols-2 gap-6">
-              {slide.content.members.map((member: any, index: number) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card className="p-6 hover:shadow-xl transition-all duration-300">
-                    <CardContent className="space-y-4">
-                      <div className="text-center">
-                        <Users className="w-10 h-10 mx-auto text-green-600 mb-2" />
-                        <h3 className="text-lg font-bold text-gray-800">
-                          {member.name}
-                        </h3>
-                        <Badge variant="outline" className="text-sm mt-1">
-                          {member.role}
-                        </Badge>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-600">
-                          Key Contributions:
-                        </p>
-                        <ul className="space-y-1">
-                          {member.contributions.map(
-                            (contribution: string, contribIndex: number) => (
-                              <li
-                                key={contribIndex}
-                                className="flex items-start space-x-2"
-                              >
-                                <CheckCircle className="w-3 h-3 text-green-600 mt-1 flex-shrink-0" />
-                                <span className="text-sm text-gray-700">
-                                  {contribution}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+            <div className="flex flex-col gap-8 w-full">
+              {/* Image 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("../assets/shan1.jpg")}
+                      alt={slide.content.image1.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {slide.content.image1.caption}
+                  </h3>
+                  <p className="text-gray-600">
+                    Detailed description about this screenshot and its features.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Image 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan2.jpg")}
+                      alt={slide.content.image2.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {slide.content.image2.caption}
+                  </h3>
+                  <p className="text-gray-600">
+                    Detailed description about this screenshot and its features.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Image 3 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan3.jpg")}
+                      alt={slide.content.image3.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {slide.content.image3.caption}
+                  </h3>
+                  <p className="text-gray-600">
+                    Detailed description about this screenshot and its features.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Image 4 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan4.jpg")}
+                      alt={slide.content.image4.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {slide.content.image4.caption}
+                  </h3>
+                  <p className="text-gray-600">
+                    Detailed description about this screenshot and its features.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Image 5 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan5.jpg")}
+                      alt={slide.content.image5.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {slide.content.image5.caption}
+                  </h3>
+                  <p className="text-gray-600">
+                    Detailed description about this screenshot and its features.
+                  </p>
+                </div>
+              </motion.div>
             </div>
           </div>
         );
-
       case "impact":
         return (
           <div className="space-y-10">
