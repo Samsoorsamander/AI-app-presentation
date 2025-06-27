@@ -145,6 +145,7 @@ const slides = [
             "Achieve Text generation",
             "Achieve Image generation",
             "Achieve Image analysis",
+            "Offline History access",
             "Achieve <500ms response time for text generation",
             "Maintain <4MB model footprint for mobile deployment",
             "Support 1,000+ concurrent user sessions",
