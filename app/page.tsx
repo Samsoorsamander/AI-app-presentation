@@ -142,6 +142,9 @@ const slides = [
         {
           category: "Functional Objectives",
           goals: [
+            "Achieve Text generation",
+            "Achieve Image generation",
+            "Achieve Image analysis",
             "Achieve <500ms response time for text generation",
             "Maintain <4MB model footprint for mobile deployment",
             "Support 1,000+ concurrent user sessions",
@@ -150,7 +153,7 @@ const slides = [
         {
           category: "Technical Objectives",
           goals: [
-            "Implement OAuth with Clerk authentication",
+            "Implement Clerk authentication",
             "Ensure 99.5% uptime for core services",
             "Cross-platform compatibility (iOS 18+/Android 15+)",
           ],
@@ -233,11 +236,13 @@ const slides = [
           name: "Clerk",
           category: "Authentication",
           icon: Shield,
-          description: "Secure user management with social login support",
+          description:
+            "Secure user authentication with email/password sign-up and login",
           benefits: [
-            "OAuth integration",
-            "Multi-factor auth",
+            "Email verification flow",
+            "Password management",
             "Session management",
+            "Basic user profile management",
           ],
         },
         {
@@ -248,6 +253,7 @@ const slides = [
           benefits: [
             "Natural language processing",
             "Image generation",
+            "Image analysis",
             "Multimodal support",
           ],
         },
@@ -309,7 +315,7 @@ const slides = [
         },
         {
           name: "Authentication Module",
-          description: "Clerk SDK integration for security",
+          description: "Clerk integration for security",
           icon: Lock,
         },
         {
@@ -336,16 +342,17 @@ const slides = [
       steps: [
         {
           step: 1,
-          title: "User Input",
-          description: "Text or image prompt submission",
-          icon: Users,
-        },
-        {
-          step: 2,
           title: "Authentication",
           description: "Clerk security validation",
           icon: Shield,
         },
+        {
+          step: 2,
+          title: "User Input",
+          description: "Text or image prompt submission",
+          icon: Users,
+        },
+
         {
           step: 3,
           title: "AI Processing",
@@ -394,7 +401,7 @@ const slides = [
         },
         {
           title: "Accessibility",
-          description: "Support for users with disabilities",
+          description: "Always Accessible for users",
           icon: Users,
         },
         {
@@ -775,7 +782,7 @@ const AuthenticatedApp = () => {
         {
           type: "Integration Testing",
           description: "API integration and data flow testing",
-          tools: ["Detox", "Postman"],
+          tools: ["Manual testing"],
           coverage: "78%",
         },
         {
@@ -787,7 +794,7 @@ const AuthenticatedApp = () => {
         {
           type: "Performance Testing",
           description: "Response time and memory usage testing",
-          tools: ["React Native Performance", "Flipper"],
+          tools: ["React Native Performance"],
           coverage: "90%",
         },
       ],
@@ -1200,23 +1207,23 @@ const AuthenticatedApp = () => {
     content: {
       image1: {
         src: "/assets/shan1.jpg",
-        caption: "Chat Interface",
+        caption: "Login Screen",
       },
       image2: {
         src: "@/assets/shan2.jpg",
-        caption: "Image Generation",
+        caption: "Chat Interface",
       },
       image3: {
         src: "/assets/shan3.jpg",
-        caption: "Settings Screen",
+        caption: "History Interface",
       },
       image4: {
         src: "/assets/shan4.jpg",
-        caption: "Multi-AI Selection",
+        caption: "Image Generation",
       },
       image5: {
         src: "/assets/shan5.jpg",
-        caption: "Dark Mode",
+        caption: "Image Analysis",
       },
     },
   },
