@@ -1255,21 +1255,6 @@ const AuthenticatedApp = () => {
           definition:
             "Tera Operations Per Second - Measure of AI processor performance",
         },
-        {
-          term: "CDN",
-          definition:
-            "Content Delivery Network - Geographically distributed network of proxy servers",
-        },
-        {
-          term: "JWT",
-          definition:
-            "JSON Web Token - Compact URL-safe means of representing claims between parties",
-        },
-        {
-          term: "OAuth",
-          definition:
-            "Open standard for access delegation, commonly used for token-based authentication",
-        },
       ],
     },
   },
