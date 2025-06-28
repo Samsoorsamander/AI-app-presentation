@@ -1,0 +1,3341 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Zap,
+  Database,
+  Shield,
+  Smartphone,
+  Brain,
+  ImageIcon,
+  MessageSquare,
+  CheckCircle,
+  Star,
+  Code,
+  Cpu,
+  Globe,
+  Lock,
+  Layers,
+  Users,
+  Settings,
+  Cloud,
+  Award,
+  Lightbulb,
+  Rocket,
+  Monitor,
+  Palette,
+  Moon,
+  Sun,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
+import type { Engine } from "tsparticles-engine";
+
+const slides = [
+  {
+    id: 1,
+    title: "AI Assistant",
+    subtitle: "An Intelligent Conversational and Image-Generating Application",
+    type: "title",
+    description:
+      "Welcome to our final year project presentation. Today we'll showcase our AI Assistant mobile application that combines conversational AI with image generation capabilities, developed by our team of six computer science students.",
+    content: {
+      team: [
+        "Samsoor Samander",
+        "Hussain Hamim",
+        "Haroonullah Nikzad",
+        "Noor Mohammad",
+        "Mohammad Bilal",
+        "Ashiqullah",
+      ],
+      university: "Shaikh Zayed University",
+      department: "Computer Science Faculty - Information System Department",
+      year: "2025",
+      instructor: "Naqibullah Nawid",
+    },
+  },
+  {
+    id: 2,
+    title: "Project Overview",
+    subtitle: "Revolutionizing Mobile AI Interaction",
+    type: "overview",
+    description:
+      "Our project addresses the growing need for unified AI experiences on mobile platforms. We've achieved remarkable performance metrics including sub-500ms response times and 4.6/5 user satisfaction rating across both iOS and Android platforms.",
+    content: {
+      stats: [
+        { label: "Natural Language processisng", value: "Chat", icon: Zap },
+        { label: "Image generation", value: "Image", icon: Zap },
+        { label: "Image Analysis", value: "Image Analysis", icon: Zap },
+        {
+          label: "SQLite for local storage",
+          value: "Offline access",
+          icon: Zap,
+        },
+        { label: "User Satisfaction", value: "4.6/5", icon: Star },
+        { label: "Platform Support", value: "iOS & Android", icon: Smartphone },
+        { label: "AI Models", value: "3 Integrated", icon: Brain },
+      ],
+    },
+  },
+  {
+    id: 3,
+    title: "Background & Motivation",
+    subtitle: "The AI Revolution in Mobile Computing",
+    type: "background",
+    description:
+      "The artificial intelligence revolution has transformed human-computer interaction. With generative AI adoption growing 400% since 2020 and the global chatbot market projected to reach $10.5 billion by 2026, we identified a significant opportunity in mobile AI applications.",
+    content: {
+      trends: [
+        {
+          title: "Conversational AI Growth",
+          value: "400%",
+          period: "Since 2020",
+        },
+        { title: "Global Chatbot Market", value: "$10.5B", period: "By 2026" },
+        {
+          title: "Mobile AI Processing",
+          value: "15-30 TOPS",
+          period: "Current Smartphones",
+        },
+        {
+          title: "User Adoption Rate",
+          value: "78%",
+          period: "Multi-app Usage",
+        },
+      ],
+    },
+  },
+  {
+    id: 4,
+    title: "Problem Statement",
+    subtitle: "Current AI Applications Limitations",
+    type: "problem",
+    description:
+      "Through our research, we identified three critical limitations in current AI applications: fragmented user experiences, poor mobile optimization, and inadequate data persistence. These issues create friction in user workflows and limit the potential of AI technology.",
+    content: {
+      problems: [
+        {
+          title: "Fragmented Experiences",
+          description:
+            "78% of users switch between 3+ apps for different AI functions",
+          impact: "Poor user experience and workflow disruption",
+        },
+        {
+          title: "Mobile Optimization Challenges",
+          description:
+            "Only 12% of AI web applications have responsive mobile interfaces",
+          impact: "High latency (800-1200ms) and poor performance",
+        },
+        {
+          title: "Data Persistence Issues",
+          description: "63% of chat applications lose history after 24 hours",
+          impact: "No cross-device synchronization and data loss",
+        },
+      ],
+    },
+  },
+  {
+    id: 5,
+    title: "Project Objectives",
+    subtitle: "Quantified Goals and Success Metrics",
+    type: "objectives",
+    description:
+      "We established clear, measurable objectives across functional, technical, and user experience domains. These objectives guided our development process and provided benchmarks for success evaluation.",
+    content: {
+      objectives: [
+        {
+          category: "Functional Objectives",
+          goals: [
+            "Achieve Text generation",
+            "Achieve Image generation",
+            "Achieve Image analysis",
+            "Offline History access",
+            "Achieve <500ms response time for text generation",
+            "Maintain <4MB model footprint for mobile deployment",
+            "Support 1,000+ concurrent user sessions",
+          ],
+        },
+        {
+          category: "Technical Objectives",
+          goals: [
+            "Implement Clerk authentication",
+            "Ensure 99.5% uptime for core services",
+            "Cross-platform compatibility (iOS 18+/Android 15+)",
+          ],
+        },
+        {
+          category: "User Experience Objectives",
+          goals: [
+            "Score >4.5/5 in usability testing",
+            "Achieve <15 second first-time setup",
+            "Support 10+ languages by default",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: 6,
+    title: "Literature Review",
+    subtitle: "AI Technologies and Existing Solutions",
+    type: "literature",
+    description:
+      "Our literature review examined current AI technologies, generative models, and existing mobile AI applications. We analyzed GPT-4, Gemini, and other leading models to understand their capabilities and limitations in mobile contexts.",
+    content: {
+      areas: [
+        {
+          title: "Artificial Intelligence Overview",
+          description:
+            "Foundation of modern smart applications enabling machine learning and decision making",
+          keyPoints: [
+            "Natural language processing",
+            "Machine learning algorithms",
+            "Human-computer interaction",
+          ],
+        },
+        {
+          title: "Generative AI Technologies",
+          description:
+            "Advanced models for text and image generation with human-like capabilities",
+          keyPoints: [
+            "GPT-4 language model",
+            "DALL-E image generation",
+            "Multimodal AI systems",
+          ],
+        },
+        {
+          title: "Mobile AI Integration",
+          description:
+            "Challenges and opportunities in mobile AI application development",
+          keyPoints: [
+            "API integration patterns",
+            "Mobile optimization",
+            "Offline capabilities",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: 7,
+    title: "Technology Stack",
+    subtitle: "Modern Technologies for Optimal Performance",
+    type: "tech",
+    description:
+      "We carefully selected our technology stack to ensure cross-platform compatibility, optimal performance, and scalability. Each technology was chosen based on specific criteria including community support, documentation quality, and integration capabilities.",
+    content: {
+      technologies: [
+        {
+          name: "React Native + Expo",
+          category: "Frontend",
+          icon: Smartphone,
+          description:
+            "Cross-platform mobile development with native performance",
+          benefits: [
+            "Single codebase",
+            "Fast development",
+            "Native UI components",
+          ],
+        },
+        {
+          name: "Clerk",
+          category: "Authentication",
+          icon: Shield,
+          description:
+            "Secure user authentication with email/password sign-up and login",
+          benefits: [
+            "Email verification flow",
+            "Password management",
+            "Session management",
+            "Basic user profile management",
+          ],
+        },
+        {
+          name: "OpenAI, Gemini, Stability",
+          category: "AI APIs",
+          icon: Brain,
+          description: "Advanced AI capabilities for text and image generation",
+          benefits: [
+            "Natural language processing",
+            "Image generation",
+            "Image analysis",
+            "Multimodal support",
+          ],
+        },
+        {
+          name: "SQLite",
+          category: "Database",
+          icon: Database,
+          description: "Lightweight local storage for offline functionality",
+          benefits: ["Zero configuration", "Offline access", "Fast queries"],
+        },
+      ],
+    },
+  },
+  {
+    id: 8,
+    title: "System Architecture Overview",
+    subtitle: "High-Level System Design",
+    type: "architecture-overview",
+    description:
+      "Our system follows a modular architecture with clear separation of concerns. The design ensures scalability, maintainability, and optimal performance across different mobile platforms while providing seamless integration with multiple AI services.",
+    content: {
+      layers: [
+        {
+          name: "Presentation Layer",
+          description: "React Native UI components and navigation",
+          icon: Monitor,
+        },
+        {
+          name: "Business Logic Layer",
+          description: "Application logic and state management",
+          icon: Settings,
+        },
+        {
+          name: "Integration Layer",
+          description: "AI API communication and data processing",
+          icon: Cloud,
+        },
+        {
+          name: "Data Layer",
+          description: "Local SQLite storage and caching",
+          icon: Database,
+        },
+      ],
+    },
+  },
+  {
+    id: 9,
+    title: "System Architecture Components",
+    subtitle: "Detailed Component Interaction",
+    type: "architecture",
+    description:
+      "Each component in our architecture serves a specific purpose and communicates through well-defined interfaces. This modular approach allows for easy maintenance, testing, and future enhancements while ensuring optimal performance.",
+    content: {
+      components: [
+        {
+          name: "User Interface",
+          description: "React Native with Expo framework",
+          icon: Layers,
+        },
+        {
+          name: "Authentication Module",
+          description: "Clerk integration for security",
+          icon: Lock,
+        },
+        {
+          name: "AI Integration Layer",
+          description: "Multiple AI API providers management",
+          icon: Cpu,
+        },
+        {
+          name: "Local Storage",
+          description: "SQLite database for offline access",
+          icon: Database,
+        },
+      ],
+    },
+  },
+  {
+    id: 10,
+    title: "Data Flow Design",
+    subtitle: "Information Processing Pipeline",
+    type: "dataflow",
+    description:
+      "Our data flow design ensures efficient processing of user requests through authentication, AI processing, and local storage. The pipeline is optimized for low latency and high reliability with proper error handling at each stage.",
+    content: {
+      steps: [
+        {
+          step: 1,
+          title: "Authentication",
+          description: "Clerk security validation",
+          icon: Shield,
+        },
+        {
+          step: 2,
+          title: "User Input",
+          description: "Text or image prompt submission",
+          icon: Users,
+        },
+        {
+          step: 3,
+          title: "AI Processing",
+          description: "API call to selected AI provider",
+          icon: Brain,
+        },
+        {
+          step: 4,
+          title: "Response Handling",
+          description: "Process and format AI response",
+          icon: Settings,
+        },
+        {
+          step: 5,
+          title: "Local Storage",
+          description: "Save to SQLite for offline access",
+          icon: Database,
+        },
+        {
+          step: 6,
+          title: "UI Update",
+          description: "Display response to user",
+          icon: Monitor,
+        },
+      ],
+    },
+  },
+  {
+    id: 11,
+    title: "UI/UX Design Principles",
+    subtitle: "User-Centered Design Approach",
+    type: "design",
+    description:
+      "Our design philosophy prioritizes user experience with intuitive navigation, consistent visual elements, and accessibility. We followed Material Design and iOS Human Interface Guidelines to ensure native feel across platforms.",
+    content: {
+      principles: [
+        {
+          title: "Simplicity",
+          description: "Clean, uncluttered interface design",
+          icon: Palette,
+        },
+        {
+          title: "Consistency",
+          description: "Uniform design patterns throughout",
+          icon: Layers,
+        },
+        {
+          title: "Accessibility",
+          description: "Always Accessible for users",
+          icon: Users,
+        },
+        {
+          title: "Performance",
+          description: "Smooth animations and fast responses",
+          icon: Zap,
+        },
+        {
+          title: "Responsiveness",
+          description: "Adaptive design for all screen sizes",
+          icon: Smartphone,
+        },
+        {
+          title: "Feedback",
+          description: "Clear visual and haptic feedback",
+          icon: MessageSquare,
+        },
+      ],
+    },
+  },
+  {
+    id: 12,
+    title: "Research Methodology",
+    subtitle: "Systematic Approach to AI Model Analysis",
+    type: "methodology",
+    description:
+      "We employed a structured methodology to analyze existing AI models, combining quantitative benchmarking with qualitative evaluation. Our approach ensured comprehensive understanding of model capabilities, limitations, and optimal integration strategies.",
+    content: {
+      phases: [
+        {
+          name: "Model Selection",
+          description:
+            "Identified leading AI models based on market share, capabilities, and documentation quality",
+          activities: [
+            "Evaluated 12 major AI providers",
+            "Selected top 3 models (GPT-4, Gemini, Stable Diffusion)",
+            "Criteria: Accuracy, Speed, Cost, Mobile Support",
+          ],
+          icon: Database,
+        },
+        {
+          name: "API Analysis",
+          description: "Technical evaluation of integration requirements",
+          activities: [
+            "Documentation quality assessment",
+            "Authentication methods",
+            "Rate limiting and error handling",
+          ],
+          icon: Code,
+        },
+      ],
+      outcomes: [],
+    },
+  },
+  {
+    id: 13,
+    title: "AI Model Integration",
+    subtitle: "Multiple AI Provider Implementation",
+    type: "ai-integration",
+    description:
+      "Our application integrates three major AI providers to offer diverse capabilities. We implemented a unified interface that allows seamless switching between providers based on user needs and service availability.",
+    content: {
+      providers: [
+        {
+          name: "OpenAI GPT-4",
+          capabilities: [
+            "Natural language processing",
+            "Code generation",
+            "Creative writing",
+          ],
+          use_case: "General conversational AI and text generation",
+        },
+        {
+          name: "Google Gemini",
+          capabilities: [
+            "Multimodal understanding",
+            "Image analysis",
+            "Context awareness",
+          ],
+          use_case: "Complex reasoning and multimodal interactions",
+        },
+        {
+          name: "Stability AI",
+          capabilities: [
+            "Image generation",
+            "Style transfer",
+            "Creative imagery",
+          ],
+          use_case: "High-quality image creation from text prompts",
+        },
+      ],
+    },
+  },
+  {
+    id: 14,
+    title: "Code Implementation - AI Integration",
+    subtitle: "Core AI Service Implementation",
+    type: "code-ai",
+    description:
+      "This code demonstrates our AI service integration with error handling, response caching, and database storage. The implementation ensures reliable communication with AI providers while maintaining optimal performance.",
+    content: {
+      snippet: {
+        title: "AI Service Integration",
+        language: "javascript",
+        code: `const genAI = new GoogleGenerativeAI(process.env.EXPO_PUBLIC_GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+export async function* streamMessage(message: string) {
+  try {
+    if (!process.env.EXPO_PUBLIC_GEMINI_API_KEY) {
+      throw new Error('API key is not configured');
+    }
+
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    const text = response.text();
+
+    // Simulate streaming by chunking the text
+    const words = text.split(' ');
+    for (const word of words) {
+      yield word + ' ';
+      await new Promise((resolve) => setTimeout(resolve, 40));
+    }
+  } catch (error) {
+    console.error('Error streaming message:', error);
+    if (error instanceof Error) {
+      throw new Error(Failed to stream message: ${"error.message"});
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}`,
+      },
+      comments: [
+        "Initializes the Google Generative AI client with API key from environment variables",
+        "Creates a generative model instance with specified model version",
+        "Async generator function for streaming message responses",
+        "Validates API key configuration before making requests",
+        "Generates content based on user message and awaits response",
+        "Processes response text and splits into words for streaming effect",
+        "Yields words with small delay to simulate real-time streaming",
+        "Comprehensive error handling for various failure scenarios",
+      ],
+    },
+  },
+  {
+    id: 15,
+    title: "Code Implementation - Database",
+    subtitle: "SQLite Database Configuration",
+    type: "code-db",
+    description:
+      "Our database implementation provides efficient local storage with proper schema design. This ensures fast queries, data integrity, and offline functionality for user conversations and generated content.",
+    content: {
+      snippet: {
+        title: "SQLite Database Setup",
+        language: "javascript",
+        code: `const databaseCode = import { Chat, Message, Role } from '@/utils/Interfaces';
+import { SQLiteDatabase } from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+
+export async function migrateDbIfNeeded(db: SQLiteDatabase) {
+  const DATABASE_VERSION = 1;
+  let result = await db.getFirstAsync<{ user_version: number }>(
+    'PRAGMA user_version'
+  );
+
+  let currentDbVersion = result?.user_version ?? 0;
+
+  if (currentDbVersion >= DATABASE_VERSION) {
+    return;
+  }
+  if (currentDbVersion === 0) {
+    const result = await db.execAsync(\`
+PRAGMA journal_mode = 'wal';
+ 
+CREATE TABLE chats (
+  id INTEGER PRIMARY KEY NOT NULL, 
+  title TEXT NOT NULL
+);
+
+CREATE TABLE messages (
+  id INTEGER PRIMARY KEY NOT NULL, 
+  chat_id INTEGER NOT NULL, 
+  content TEXT, 
+  imageUrl TEXT, 
+  role TEXT, 
+  prompt TEXT, 
+  FOREIGN KEY (chat_id) REFERENCES chats (id) ON DELETE CASCADE
+);
+\`);
+
+    currentDbVersion = 1;
+  }
+
+  await db.execAsync(\`PRAGMA user_version = \${DATABASE_VERSION}\`);
+}
+
+export const addChat = async (db: SQLiteDatabase, title: string) => {
+  return await db.runAsync('INSERT INTO chats (title) VALUES (?)', title);
+};
+
+export const getChats = async (db: SQLiteDatabase) => {
+  return await db.getAllAsync<Chat>('SELECT * FROM chats');
+};
+
+export const getMessages = async (
+  db: SQLiteDatabase,
+  chatId: number
+): Promise<Message[]> => {
+  return (
+    await db.getAllAsync<Message>(
+      'SELECT * FROM messages WHERE chat_id = ?',
+      chatId
+    )
+  ).map((message) => ({
+    ...message,
+    role: '' + message.role === 'bot' ? Role.Bot : Role.User,
+  }));
+};
+
+export const addMessage = async (
+  db: SQLiteDatabase,
+  chatId: number,
+  { content, role, imageUrl, prompt }: Message
+) => {
+  return await db.runAsync(
+    'INSERT INTO messages (chat_id, content, role, imageUrl, prompt) VALUES (?, ?, ?, ?, ?)',
+    chatId,
+    content,
+    role === Role.Bot ? 'bot' : 'user',
+    imageUrl || '',
+    prompt || ''
+  );
+};
+
+export const deleteChat = async (db: SQLiteDatabase, chatId: number) => {
+  return await db.runAsync('DELETE FROM chats WHERE id = ?', chatId);
+};
+
+export const deleteChatAll = async (db: SQLiteDatabase) => {
+  return await db.runAsync('DELETE FROM chats');
+};
+
+export const renameChat = async (
+  db: SQLiteDatabase,
+  chatId: number,
+  title: string
+) => {
+  return await db.runAsync(
+    'UPDATE chats SET title = ? WHERE id = ?',
+    title,
+    chatId
+  );
+};`,
+      },
+      comments: [
+        "Database migration function to handle schema changes across versions",
+        "Sets WAL journal mode for better concurrency and performance",
+        "Creates chats table with auto-incrementing ID and title",
+        "Creates messages table with foreign key relationship to chats",
+        "CASCADE delete ensures messages are deleted when chat is removed",
+        "CRUD operations for chat management (create, read, update, delete)",
+        "Type-safe queries with proper parameter binding for security",
+        "Message role conversion between database and application types",
+      ],
+    },
+  },
+  {
+    id: 16,
+    title: "Code Implementation - Authentication",
+    subtitle: "Clerk Authentication Setup",
+    type: "code-auth",
+    description:
+      "This implementation shows our Clerk authentication integration with React Native. The code handles user sign-in, session management, and secure API calls with proper error handling and user feedback.",
+    content: {
+      snippet: {
+        title: "Authentication Implementation",
+        language: "javascript",
+        code: `// Clerk Authentication Integration
+import { useAuth, useUser } from '@clerk/clerk-expo';
+import { useEffect, useState } from 'react';
+
+const AuthenticatedApp = () => {
+  const { isSignedIn, getToken } = useAuth();
+  const { user } = useUser();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [isSignedIn]);
+
+  const checkAuthStatus = async () => {
+    try {
+      if (isSignedIn) {
+        // Initialize user preferences
+        await initializeUserData(user.id);
+        // Setup database for user
+        await setupUserDatabase(user.id);
+      }
+    } catch (error) {
+      console.error('Auth setup error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const makeAuthenticatedRequest = async (endpoint, data) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': \`Bearer \${token}\`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Request failed');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Authenticated request error:', error);
+      throw error;
+    }
+  };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return isSignedIn ? <MainApp /> : <SignInScreen />;
+};`,
+      },
+      comments: [
+        "Uses Clerk's React Native hooks for authentication state management",
+        "Tracks loading state during auth initialization",
+        "Effect hook to check auth status when sign-in state changes",
+        "Async function to handle post-authentication setup",
+        "Initializes user-specific data and database on successful sign-in",
+        "Handles authentication errors gracefully with logging",
+        "Helper function for making authenticated API requests",
+        "Automatically includes JWT token in authorization header",
+        "Conditional rendering based on authentication state",
+        "Shows loading screen during initial auth check",
+      ],
+    },
+  },
+  {
+    id: 17,
+    title: "Testing Methodology",
+    subtitle: "Comprehensive Quality Assurance",
+    type: "testing-method",
+    description:
+      "We implemented a comprehensive testing strategy including unit tests, integration tests, and user acceptance testing. Our test-driven development approach ensured high code quality and reliable functionality across all features.",
+    content: {
+      testTypes: [
+        {
+          type: "Unit Testing",
+          description: "Individual component and function testing",
+          tools: ["Jest", "React Native Testing Library"],
+          coverage: "85%",
+        },
+        {
+          type: "Integration Testing",
+          description: "API integration and data flow testing",
+          tools: ["Manual testing"],
+          coverage: "78%",
+        },
+        {
+          type: "User Acceptance Testing",
+          description: "Real user testing with 20 participants",
+          tools: ["Manual testing", "User feedback forms"],
+          coverage: "100%",
+        },
+        {
+          type: "Performance Testing",
+          description: "Response time and memory usage testing",
+          tools: ["React Native Performance"],
+          coverage: "90%",
+        },
+      ],
+    },
+  },
+  {
+    id: 18,
+    title: "Functional Testing Results",
+    subtitle: "Core Feature Validation",
+    type: "testing-functional",
+    description:
+      "All core functionalities passed our rigorous testing process. We validated authentication, AI integration, data storage, error handling, and cross-platform compatibility across multiple devices and operating system versions.",
+    content: {
+      testResults: [
+        {
+          component: "Authentication",
+          testCase: "Sign up, login, and logout using Clerk",
+          status: "✅ Passed",
+          details: "100% success rate across all test scenarios",
+        },
+        {
+          component: "Text Generation",
+          testCase: "Accept user input and send to AI APIs",
+          status: "✅ Passed",
+          details: "Average response time: 420ms",
+        },
+        {
+          component: "Image Generation",
+          testCase: "Generate and display images from text prompts",
+          status: "✅ Passed",
+          details: "Average generation time: 2.1s",
+        },
+        {
+          component: "Data Storage",
+          testCase: "Store responses in SQLite and retrieve chat history",
+          status: "✅ Passed",
+          details: "100% data integrity maintained",
+        },
+        {
+          component: "Error Handling",
+          testCase: "Handle API failures and network loss",
+          status: "✅ Passed",
+          details: "Graceful degradation implemented",
+        },
+        {
+          component: "Multilingual Input",
+          testCase: "Process prompts in multiple languages",
+          status: "✅ Passed",
+          details: "10+ languages supported",
+        },
+      ],
+    },
+  },
+  {
+    id: 19,
+    title: "Performance Benchmarking",
+    subtitle: "Exceeding Target Metrics",
+    type: "performance",
+    description:
+      "Our performance testing exceeded initial targets across all key metrics. We achieved sub-500ms response times, maintained low memory usage, and ensured smooth user experience even under high load conditions.",
+    content: {
+      metrics: [
+        {
+          label: "Text Response Time",
+          target: "<500ms",
+          achieved: "420ms",
+          percentage: 84,
+          improvement: "16% better than target",
+        },
+        {
+          label: "Image Generation",
+          target: "<3s",
+          achieved: "2.1s",
+          percentage: 70,
+          improvement: "30% better than target",
+        },
+        {
+          label: "App Launch Time",
+          target: "<2s",
+          achieved: "1.3s",
+          percentage: 65,
+          improvement: "35% better than target",
+        },
+        {
+          label: "Memory Usage",
+          target: "<100MB",
+          achieved: "78MB",
+          percentage: 78,
+          improvement: "22% better than target",
+        },
+        {
+          label: "Battery Efficiency",
+          target: "8hrs",
+          achieved: "9.2hrs",
+          percentage: 87,
+          improvement: "15% better than target",
+        },
+        {
+          label: "System Uptime",
+          target: "99.5%",
+          achieved: "99.7%",
+          percentage: 99,
+          improvement: "0.2% better than target",
+        },
+      ],
+    },
+  },
+  {
+    id: 20,
+    title: "User Experience Evaluation",
+    subtitle: "20 Participant User Study Results",
+    type: "ux-evaluation",
+    description:
+      "We conducted comprehensive user testing with 20 participants including students, developers, and casual users. The evaluation focused on usability, visual appeal, response accuracy, and overall satisfaction with detailed feedback collection.",
+    content: {
+      ratings: [
+        {
+          category: "UI/UX Design",
+          rating: 4.7,
+          maxRating: 5,
+          feedback: "Clean, intuitive interface",
+        },
+        {
+          category: "Ease of Login",
+          rating: 4.6,
+          maxRating: 5,
+          feedback: "Quick and secure authentication",
+        },
+        {
+          category: "Response Relevance",
+          rating: 4.5,
+          maxRating: 5,
+          feedback: "Accurate and helpful responses",
+        },
+        {
+          category: "Image Quality",
+          rating: 4.3,
+          maxRating: 5,
+          feedback: "High-quality generated images",
+        },
+        {
+          category: "App Performance",
+          rating: 4.8,
+          maxRating: 5,
+          feedback: "Fast and responsive",
+        },
+        {
+          category: "Overall Satisfaction",
+          rating: 4.6,
+          maxRating: 5,
+          feedback: "Would recommend to others",
+        },
+      ],
+      demographics: {
+        students: "40%",
+        developers: "35%",
+        casualUsers: "25%",
+      },
+    },
+  },
+  {
+    id: 21,
+    title: "Key Features Deep Dive",
+    subtitle: "Comprehensive AI Assistant Capabilities",
+    type: "features",
+    description:
+      "Our AI Assistant offers six core features designed to provide a comprehensive AI experience. Each feature is optimized for mobile use with careful attention to performance, usability, and reliability.",
+    content: {
+      features: [
+        {
+          title: "Natural Language Processing",
+          description:
+            "Advanced conversational AI with context awareness and multi-turn dialogue support",
+          icon: MessageSquare,
+          details: [
+            "Context retention",
+            "Multi-language support",
+            "Conversation history",
+          ],
+        },
+        {
+          title: "Image Generation",
+          description:
+            "Create high-quality images from text prompts using Stability AI technology",
+          icon: ImageIcon,
+          details: [
+            "Multiple art styles",
+            "High resolution output",
+            "Prompt optimization",
+          ],
+        },
+        {
+          title: "Cross-Platform Support",
+          description:
+            "Native performance on both iOS and Android with consistent user experience",
+          icon: Globe,
+          details: [
+            "iOS 18+ support",
+            "Android 15+ support",
+            "Responsive design",
+          ],
+        },
+        {
+          title: "Offline Access",
+          description:
+            "Local storage for chat history and generated content with SQLite database",
+          icon: Database,
+          details: ["Chat history", "Image caching", "Offline browsing"],
+        },
+        {
+          title: "Secure Authentication",
+          description:
+            "Multi-factor authentication with Clerk providing enterprise-grade security",
+          icon: Shield,
+          details: ["OAuth integration", "Social logins", "Session management"],
+        },
+        {
+          title: "Real-time Responses",
+          description:
+            "Sub-500ms response times for optimal user experience and engagement",
+          icon: Zap,
+          details: ["Optimized APIs", "Efficient caching", "Smart preloading"],
+        },
+      ],
+    },
+  },
+  {
+    id: 22,
+    title: "Challenges and Solutions",
+    subtitle: "Overcoming Development Obstacles",
+    type: "challenges",
+    description:
+      "During development, we encountered several technical challenges that required innovative solutions. Our problem-solving approach demonstrates our technical expertise and adaptability in complex software development.",
+    content: {
+      challenges: [
+        {
+          challenge: "API Rate Limiting",
+          description: "Managing multiple AI provider rate limits and costs",
+          solution:
+            "Implemented intelligent request queuing and caching system",
+          impact: "Reduced API calls by 40% while maintaining performance",
+        },
+        {
+          challenge: "Cross-Platform Consistency",
+          description:
+            "Ensuring identical user experience across iOS and Android",
+          solution:
+            "Developed custom component library with platform-specific adaptations",
+          impact: "Achieved 98% UI consistency across platforms",
+        },
+        {
+          challenge: "Offline Functionality",
+          description:
+            "Providing meaningful functionality without internet connection",
+          solution:
+            "Implemented comprehensive local caching and SQLite storage",
+          impact: "Users can access 100% of chat history offline",
+        },
+        {
+          challenge: "Performance Optimization",
+          description:
+            "Maintaining fast response times with multiple AI integrations",
+          solution: "Developed smart routing and fallback mechanisms",
+          impact: "Achieved sub-500ms response times consistently",
+        },
+      ],
+    },
+  },
+  {
+    id: 23,
+    title: "Comparison with Existing Solutions",
+    subtitle: "Competitive Analysis and Advantages",
+    type: "comparison",
+    description:
+      "Our solution addresses key limitations found in existing AI applications. We compared our app with popular alternatives like ChatGPT mobile, Google Bard, and other AI assistants to highlight our unique value proposition.",
+    content: {
+      comparisons: [
+        {
+          feature: "Multi-AI Integration",
+          ourApp: "✅ 3 AI providers",
+          competitors: "❌ Single provider",
+          advantage: "Flexibility and redundancy",
+        },
+        {
+          feature: "Offline Access",
+          ourApp: "✅ Full chat history",
+          competitors: "❌ Online only",
+          advantage: "Always accessible",
+        },
+        {
+          feature: "Image Generation",
+          ourApp: "✅ Integrated seamlessly",
+          competitors: "⚠️ Separate apps",
+          advantage: "Unified experience",
+        },
+        {
+          feature: "Response Time",
+          ourApp: "✅ <500ms",
+          competitors: "⚠️ 800-1200ms",
+          advantage: "Superior performance",
+        },
+        {
+          feature: "Mobile Optimization",
+          ourApp: "✅ Native mobile app",
+          competitors: "⚠️ Web-based",
+          advantage: "Better UX",
+        },
+        {
+          feature: "Data Privacy",
+          ourApp: "✅ Local storage",
+          competitors: "⚠️ Cloud dependent",
+          advantage: "Enhanced privacy",
+        },
+      ],
+    },
+  },
+  {
+    id: 24,
+    title: "System Scalability",
+    subtitle: "Architecture for Growth",
+    type: "scalability",
+    description:
+      "Our system is designed with scalability in mind, supporting future growth in user base and feature expansion. The modular architecture allows for easy integration of new AI providers and capabilities.",
+    content: {
+      aspects: [
+        {
+          title: "User Scalability",
+          current: "1,000 concurrent users",
+          target: "10,000+ users",
+          approach: "Horizontal scaling with load balancing",
+        },
+        {
+          title: "Feature Scalability",
+          current: "Text & Image AI",
+          target: "Voice, Video, Code generation",
+          approach: "Modular plugin architecture",
+        },
+        {
+          title: "Data Scalability",
+          current: "Local SQLite storage",
+          target: "Cloud sync with local caching",
+          approach: "Hybrid storage strategy",
+        },
+        {
+          title: "Geographic Scalability",
+          current: "Single region deployment",
+          target: "Multi-region with CDN",
+          approach: "Edge computing integration",
+        },
+      ],
+    },
+  },
+  {
+    id: 25,
+    title: "Future Enhancements",
+    subtitle: "Roadmap for Continued Innovation",
+    type: "future",
+    description:
+      "Our development roadmap includes exciting enhancements that will further improve user experience and expand capabilities. These features are prioritized based on user feedback and technological feasibility.",
+    content: {
+      enhancements: [
+        {
+          title: "Voice Interface",
+          description:
+            "Speech-to-text and text-to-speech capabilities for hands-free interaction",
+          priority: "High",
+          timeline: "Q2 2025",
+          impact: "Accessibility and convenience",
+        },
+        {
+          title: "Cloud Synchronization",
+          description:
+            "Cross-device chat history and preferences synchronization",
+          priority: "High",
+          timeline: "Q3 2025",
+          impact: "Seamless multi-device experience",
+        },
+        {
+          title: "Advanced Multilingual Support",
+          description: "Support for 25+ languages with real-time translation",
+          priority: "Medium",
+          timeline: "Q4 2025",
+          impact: "Global accessibility",
+        },
+        {
+          title: "On-device AI Processing",
+          description:
+            "Local model inference for enhanced privacy and offline capabilities",
+          priority: "Medium",
+          timeline: "Q1 2026",
+          impact: "Privacy and performance",
+        },
+        {
+          title: "Collaborative Features",
+          description: "Shared conversations and team workspaces",
+          priority: "Low",
+          timeline: "Q2 2026",
+          impact: "Team productivity",
+        },
+      ],
+    },
+  },
+  {
+    id: 26,
+    title: "App Screenshots",
+    subtitle: "User Interface Showcase",
+    type: "screenshots",
+    description:
+      "Here are some screenshots of our AI Assistant application showcasing the user interface and key features.",
+    content: {
+      image1: {
+        src: "/assets/shan1.jpg",
+        caption: "Login Screen",
+      },
+      image2: {
+        src: "@/assets/shan2.jpg",
+        caption: "Chat Interface",
+      },
+      image3: {
+        src: "/assets/shan3.jpg",
+        caption: "History Interface",
+      },
+      image4: {
+        src: "/assets/shan4.jpg",
+        caption: "Image Generation",
+      },
+      image5: {
+        src: "/assets/shan5.jpg",
+        caption: "Image Analysis",
+      },
+    },
+  },
+  {
+    id: 27,
+    title: "Keywords and Abbreviations",
+    subtitle: "Technical Terms and Definitions",
+    type: "keywords",
+    description:
+      "This slide provides definitions for key technical terms and abbreviations used throughout our presentation to ensure clarity and understanding for all audience members.",
+    content: {
+      terms: [
+        {
+          term: "AI",
+          definition:
+            "Artificial Intelligence - Systems that mimic human intelligence",
+        },
+        {
+          term: "NLP",
+          definition:
+            "Natural Language Processing - AI's ability to understand and generate human language",
+        },
+        {
+          term: "SQLite",
+          definition:
+            "Lightweight, serverless relational database management system",
+        },
+        {
+          term: "API",
+          definition:
+            "Application Programming Interface - Set of protocols for building software applications",
+        },
+        {
+          term: "TOPS",
+          definition:
+            "Tera Operations Per Second - Measure of AI processor performance",
+        },
+        {
+          term: "CDN",
+          definition:
+            "Content Delivery Network - Geographically distributed network of proxy servers",
+        },
+        {
+          term: "JWT",
+          definition:
+            "JSON Web Token - Compact URL-safe means of representing claims between parties",
+        },
+        {
+          term: "OAuth",
+          definition:
+            "Open standard for access delegation, commonly used for token-based authentication",
+        },
+      ],
+    },
+  },
+  {
+    id: 28,
+    title: "Lessons Learned",
+    subtitle: "Key Insights from Development",
+    type: "lessons",
+    description:
+      "Throughout the development process, we gained valuable insights about mobile AI development, team collaboration, and project management. These lessons will guide our future development efforts.",
+    content: {
+      lessons: [
+        {
+          category: "Technical Lessons",
+          insights: [
+            "API integration requires robust error handling and fallback mechanisms",
+            "Mobile performance optimization is crucial for AI applications",
+            "Local storage strategy significantly impacts user experience",
+            "Cross-platform development requires careful attention to platform differences",
+          ],
+        },
+        {
+          category: "Project Management",
+          insights: [
+            "Regular testing throughout development prevents major issues",
+            "User feedback early in development guides better design decisions",
+            "Clear communication channels are essential for team coordination",
+            "Agile methodology works well for AI application development",
+          ],
+        },
+        {
+          category: "User Experience",
+          insights: [
+            "Response time is more important than feature richness",
+            "Offline functionality is highly valued by users",
+            "Simple, intuitive interfaces perform better than complex ones",
+            "Consistent behavior across platforms builds user trust",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: 29,
+    title: "Conclusion",
+    subtitle: "Project Success and Impact",
+    type: "conclusion",
+    description:
+      "Our AI Assistant project successfully achieved all primary objectives while exceeding performance targets. We created a unified, efficient, and user-friendly mobile AI application that addresses real-world problems and provides significant value to users.",
+    content: {
+      achievements: [
+        "Successfully integrated multiple AI APIs for unified user experience",
+        "Achieved sub-500ms response times exceeding performance targets by 16%",
+        "Implemented secure, scalable authentication system with 99.7% uptime",
+        "Delivered cross-platform mobile application with 4.6/5 user satisfaction",
+        "Created modular architecture supporting future enhancements and scalability",
+        "Demonstrated technical innovation in mobile AI application development",
+        "Established foundation for continued development and feature expansion",
+      ],
+      impact:
+        "This project contributes a practical, efficient, and user-friendly AI assistant prototype that effectively bridges conversational AI and generative media within a mobile environment, reflecting current technological advancements and user expectations.",
+    },
+  },
+  {
+    id: 30,
+    title: "Thank You",
+    subtitle: "Questions & Discussion",
+    type: "thanks",
+    description:
+      "Thank you for your attention during our presentation. We're now ready to answer any questions about our AI Assistant project, technical implementation, or future development plans. We appreciate your feedback and suggestions.",
+    content: {
+      contact: {
+        university: "Shaikh Zayed University",
+        department: "Computer Science Faculty",
+        supervisor: "Naqib Naveed",
+        year: "2025",
+      },
+      acknowledgments: [
+        "Our supervisor Naqib Naveed for guidance and support",
+        "Shaikh Zayed University for providing resources and facilities",
+        "The open-source community for excellent tools and libraries",
+        "Our families and friends for their continuous encouragement",
+      ],
+    },
+  },
+];
+
+export default function AIAssistantPresentation() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+
+  const particlesInit = async (engine: Engine) => {
+    await loadFull(engine);
+  };
+
+  const particlesOptions = {
+    fullScreen: {
+      enable: true,
+      zIndex: -1,
+    },
+    particles: {
+      number: {
+        value: 50,
+        density: {
+          enable: true,
+          value_area: 800,
+        },
+      },
+      color: {
+        value: darkMode ? "#3b82f6" : "#1e40af",
+      },
+      shape: {
+        type: "circle",
+      },
+      opacity: {
+        value: darkMode ? 0.5 : 0.3,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false,
+        },
+      },
+      size: {
+        value: 3,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 2,
+          size_min: 0.1,
+          sync: false,
+        },
+      },
+      line_linked: {
+        enable: true,
+        distance: 150,
+        color: darkMode ? "#3b82f6" : "#1e40af", // Blue color adjusted for light/dark
+        opacity: darkMode ? 0.4 : 0.2, // Less visible in light mode
+        width: 1,
+      },
+      move: {
+        enable: true,
+        speed: 1,
+        direction: "none",
+        random: true,
+        straight: false,
+        out_mode: "out",
+        bounce: false,
+        attract: {
+          enable: true,
+          rotateX: 600,
+          rotateY: 1200,
+        },
+      },
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: {
+        onhover: {
+          enable: true,
+          mode: "grab",
+        },
+        onclick: {
+          enable: true,
+          mode: "push",
+        },
+        resize: true,
+      },
+      modes: {
+        grab: {
+          distance: 140,
+          line_linked: {
+            opacity: 1,
+          },
+        },
+        bubble: {
+          distance: 400,
+          size: 40,
+          duration: 2,
+          opacity: 8,
+          speed: 3,
+        },
+        push: {
+          particles_nb: 4,
+        },
+      },
+    },
+    retina_detect: true,
+  };
+
+  // Toggle dark/light mode
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Apply theme classes to body
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
+  useEffect(() => {
+    if (isAutoPlay) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [isAutoPlay]);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "ArrowRight") {
+        nextSlide();
+      } else if (event.key === "ArrowLeft") {
+        prevSlide();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const renderSlideContent = (slide: any) => {
+    switch (slide.type) {
+      case "title":
+        return (
+          <div className="text-center space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-4"
+            >
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 dark:from-blue-400 dark:via-purple-400 dark:to-cyan-400 bg-clip-text text-transparent">
+                {slide.title}
+              </h1>
+              <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                {slide.subtitle}
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="space-y-6"
+            >
+              <div className="flex flex-wrap justify-center gap-3">
+                {slide.content.team.map((member: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="text-lg px-4 py-2 bg-gray-800 text-gray-200"
+                  >
+                    {member}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="text-lg text-gray-300 space-y-1">
+                <p className="font-semibold">{slide.content.university}</p>
+                <p>{slide.content.department}</p>
+                <div className="flex justify-center">
+                  <Badge
+                    variant="default"
+                    className="text-lg px-4 py-2 bg-purple-600 text-white"
+                  >
+                    Instructor: {slide.content.instructor}
+                  </Badge>
+                </div>
+                <p className="text-blue-400 font-bold">{slide.content.year}</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-8 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm"
+            >
+              <p className="text-base text-gray-300 italic">
+                {slide.description}
+              </p>
+            </motion.div>
+          </div>
+        );
+
+      case "overview":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-8">
+              {slide.content.stats.map((stat: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2 border-gray-700 hover:border-blue-400 bg-gray-900/80 backdrop-blur-sm">
+                    <CardContent className="text-center space-y-4">
+                      <stat.icon className="w-12 h-12 mx-auto text-blue-400" />
+                      <div>
+                        <p className="text-3xl font-bold text-white">
+                          {stat.value}
+                        </p>
+                        <p className="text-lg text-gray-300 mt-1">
+                          {stat.label}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "background":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.trends.map((trend: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="text-center space-y-3">
+                      <h3 className="text-lg font-bold text-white">
+                        {trend.title}
+                      </h3>
+                      <p className="text-3xl font-bold text-blue-400">
+                        {trend.value}
+                      </p>
+                      <p className="text-sm text-gray-400">{trend.period}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "problem":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-red-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.problems.map((problem: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 border-l-4 border-red-500 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-red-400">
+                        {problem.title}
+                      </h3>
+                      <p className="text-base text-gray-300">
+                        {problem.description}
+                      </p>
+                      <Badge
+                        variant="destructive"
+                        className="text-sm px-3 py-1"
+                      >
+                        Impact: {problem.impact}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "objectives":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-green-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.objectives.map((objective: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-xl font-bold text-blue-400">
+                        {objective.category}
+                      </h3>
+                      <ul className="space-y-2">
+                        {objective.goals.map(
+                          (goal: string, goalIndex: number) => (
+                            <li
+                              key={goalIndex}
+                              className="flex items-start space-x-2"
+                            >
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span className="text-base text-gray-300">
+                                {goal}
+                              </span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "literature":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-purple-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.areas.map((area: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-xl font-bold text-purple-400">
+                        {area.title}
+                      </h3>
+                      <p className="text-base text-gray-300">
+                        {area.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {area.keyPoints.map(
+                          (point: string, pointIndex: number) => (
+                            <Badge
+                              key={pointIndex}
+                              variant="outline"
+                              className="text-sm bg-gray-800 text-gray-300"
+                            >
+                              {point}
+                            </Badge>
+                          )
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "tech":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-blue-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.technologies.map((tech: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <tech.icon className="w-10 h-10 text-blue-400" />
+                        <div>
+                          <Badge className="text-sm px-2 py-1 mb-1 bg-gray-800 text-gray-300">
+                            {tech.category}
+                          </Badge>
+                          <h3 className="text-lg font-bold text-white">
+                            {tech.name}
+                          </h3>
+                        </div>
+                      </div>
+                      <p className="text-base text-gray-400">
+                        {tech.description}
+                      </p>
+                      <div className="space-y-1">
+                        {tech.benefits.map(
+                          (benefit: string, benefitIndex: number) => (
+                            <div
+                              key={benefitIndex}
+                              className="flex items-center space-x-2"
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-500" />
+                              <span className="text-sm text-gray-400">
+                                {benefit}
+                              </span>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "architecture-overview":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-indigo-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-4">
+              {slide.content.layers.map((layer: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="flex items-center space-x-4">
+                      <layer.icon className="w-10 h-10 text-indigo-400" />
+                      <div>
+                        <h3 className="text-lg font-bold text-white">
+                          {layer.name}
+                        </h3>
+                        <p className="text-base text-gray-400">
+                          {layer.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "architecture":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-blue-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.components.map((component: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="relative"
+                >
+                  <Card className="p-6 bg-gradient-to-br from-gray-800/80 to-blue-900/80 border-2 border-blue-700 hover:shadow-xl transition-all duration-300 backdrop-blur-sm">
+                    <CardContent className="text-center space-y-3">
+                      <component.icon className="w-10 h-10 mx-auto text-blue-400" />
+                      <h3 className="text-lg font-bold text-white">
+                        {component.name}
+                      </h3>
+                      <p className="text-base text-gray-400">
+                        {component.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "dataflow":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-green-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {slide.content.steps.map((step: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="relative"
+                >
+                  <Card className="p-4 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="text-center space-y-3">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto font-bold">
+                        {step.step}
+                      </div>
+                      <step.icon className="w-8 h-8 mx-auto text-blue-400" />
+                      <h3 className="text-sm font-bold text-white">
+                        {step.title}
+                      </h3>
+                      <p className="text-xs text-gray-400">
+                        {step.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  {index < slide.content.steps.length - 1 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.8, delay: 1 }}
+                      className="absolute -right-2 top-1/2 transform -translate-y-1/2 text-blue-400"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "design":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-pink-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {slide.content.principles.map((principle: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-4 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="text-center space-y-3">
+                      <principle.icon className="w-8 h-8 mx-auto text-pink-400" />
+                      <h3 className="text-base font-bold text-white">
+                        {principle.title}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {principle.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "methodology":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-indigo-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-8">
+              {slide.content.phases.map((phase: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start space-x-4">
+                        <phase.icon className="w-10 h-10 text-indigo-400 mt-1 flex-shrink-0" />
+                        <div className="space-y-3">
+                          <h3 className="text-xl font-bold text-indigo-400">
+                            {phase.name}
+                          </h3>
+                          <p className="text-base text-gray-300">
+                            {phase.description}
+                          </p>
+                          <ul className="space-y-2">
+                            {phase.activities.map(
+                              (activity: string, activityIndex: number) => (
+                                <li
+                                  key={activityIndex}
+                                  className="flex items-start space-x-2"
+                                >
+                                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm text-gray-400">
+                                    {activity}
+                                  </span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Card className="p-6 bg-gradient-to-r from-indigo-900/50 to-blue-900/50 border-2 border-indigo-700 backdrop-blur-sm">
+                <CardHeader>
+                  {/* <CardTitle className="text-lg text-indigo-400">
+                    Key Outcomes
+                  </CardTitle> */}
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {slide.content.outcomes.map(
+                      (outcome: string, index: number) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <Lightbulb className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm text-gray-400">
+                            {outcome}
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        );
+
+      case "ai-integration":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-purple-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.providers.map((provider: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-xl font-bold text-purple-400">
+                        {provider.name}
+                      </h3>
+                      <p className="text-base text-gray-300">
+                        {provider.use_case}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {provider.capabilities.map(
+                          (capability: string, capIndex: number) => (
+                            <Badge
+                              key={capIndex}
+                              variant="outline"
+                              className="text-sm bg-gray-800 text-gray-300"
+                            >
+                              {capability}
+                            </Badge>
+                          )
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "code-ai":
+      case "code-db":
+      case "code-auth":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="overflow-hidden border-2 border-gray-700 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm">
+                <CardHeader className="bg-gradient-to-r from-gray-800 to-gray-900 text-white">
+                  <CardTitle className="text-lg flex items-center space-x-3">
+                    <Code className="w-6 h-6" />
+                    <span>{slide.content.snippet.title}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <pre className="bg-gray-900 text-green-400 p-6 overflow-x-auto text-sm leading-relaxed">
+                    <code>{slide.content.snippet.code}</code>
+                  </pre>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {slide.content.comments && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                <Card className="border-2 border-blue-700 bg-gray-900/80 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-blue-400">
+                      Code Comments
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {slide.content.comments.map(
+                        (comment: string, index: number) => (
+                          <li
+                            key={index}
+                            className="flex items-start space-x-2"
+                          >
+                            <CheckCircle className="w-4 h-4 text-blue-400 mt-1 flex-shrink-0" />
+                            <span className="text-sm text-gray-300">
+                              {comment}
+                            </span>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </div>
+        );
+
+      case "testing-method":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-orange-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.testTypes.map((testType: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-lg font-bold text-orange-400">
+                          {testType.type}
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="text-sm bg-gray-800 text-gray-300"
+                        >
+                          {testType.coverage}
+                        </Badge>
+                      </div>
+                      <p className="text-base text-gray-300">
+                        {testType.description}
+                      </p>
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold text-gray-400">
+                          Tools Used:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {testType.tools.map(
+                            (tool: string, toolIndex: number) => (
+                              <Badge
+                                key={toolIndex}
+                                variant="secondary"
+                                className="text-xs bg-gray-800 text-gray-300"
+                              >
+                                {tool}
+                              </Badge>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "testing-functional":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-green-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-4">
+              {slide.content.testResults.map((result: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-2">
+                          <h3 className="text-lg font-bold text-white">
+                            {result.component}
+                          </h3>
+                          <p className="text-base text-gray-300">
+                            {result.testCase}
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            {result.details}
+                          </p>
+                        </div>
+                        <Badge
+                          variant={
+                            result.status.includes("✅")
+                              ? "default"
+                              : "destructive"
+                          }
+                          className="text-sm px-3 py-1"
+                        >
+                          {result.status}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "performance":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-blue-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.metrics.map((metric: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-bold text-white">
+                          {metric.label}
+                        </h3>
+                        <div className="text-right">
+                          <p className="text-base text-gray-400">
+                            Target: {metric.target}
+                          </p>
+                          <p className="text-lg font-bold text-green-500">
+                            Achieved: {metric.achieved}
+                          </p>
+                          <p className="text-sm text-blue-400">
+                            {metric.improvement}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Performance</span>
+                          <span className="text-gray-300">
+                            {metric.percentage}%
+                          </span>
+                        </div>
+                        <Progress
+                          value={metric.percentage}
+                          className="h-3 bg-gray-700"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "ux-evaluation":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-yellow-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-4">
+                {slide.content.ratings.map((rating: any, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <Card className="p-4 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                      <CardContent className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-base font-bold text-white">
+                            {rating.category}
+                          </h3>
+                          <div className="flex items-center space-x-2">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${
+                                  i < Math.floor(rating.rating)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-600"
+                                }`}
+                              />
+                            ))}
+                            <span className="text-lg font-bold text-white ml-2">
+                              {rating.rating}/{rating.maxRating}
+                            </span>
+                          </div>
+                        </div>
+                        <Progress
+                          value={(rating.rating / rating.maxRating) * 100}
+                          className="h-2 bg-gray-700"
+                        />
+                        <p className="text-sm text-gray-400 italic">
+                          {rating.feedback}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-yellow-400">
+                      Participant Demographics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-base text-gray-300">
+                          Students
+                        </span>
+                        <span className="text-lg font-bold text-blue-400">
+                          {slide.content.demographics.students}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-base text-gray-300">
+                          Developers
+                        </span>
+                        <span className="text-lg font-bold text-green-400">
+                          {slide.content.demographics.developers}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-base text-gray-300">
+                          Casual Users
+                        </span>
+                        <span className="text-lg font-bold text-purple-400">
+                          {slide.content.demographics.casualUsers}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
+        );
+
+      case "features":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-indigo-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.features.map((feature: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <feature.icon className="w-8 h-8 text-blue-400" />
+                        <h3 className="text-lg font-bold text-white">
+                          {feature.title}
+                        </h3>
+                      </div>
+                      <p className="text-base text-gray-400">
+                        {feature.description}
+                      </p>
+                      <div className="space-y-1">
+                        {feature.details.map(
+                          (detail: string, detailIndex: number) => (
+                            <div
+                              key={detailIndex}
+                              className="flex items-center space-x-2"
+                            >
+                              <CheckCircle className="w-3 h-3 text-green-500" />
+                              <span className="text-sm text-gray-400">
+                                {detail}
+                              </span>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "challenges":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-red-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.challenges.map((challenge: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-lg font-bold text-red-400">
+                        {challenge.challenge}
+                      </h3>
+                      <p className="text-base text-gray-300">
+                        {challenge.description}
+                      </p>
+                      <div className="bg-green-900/50 p-3 rounded-lg">
+                        <p className="text-sm font-semibold text-green-400">
+                          Solution:
+                        </p>
+                        <p className="text-sm text-green-300">
+                          {challenge.solution}
+                        </p>
+                      </div>
+                      <div className="bg-blue-900/50 p-3 rounded-lg">
+                        <p className="text-sm font-semibold text-blue-400">
+                          Impact:
+                        </p>
+                        <p className="text-sm text-blue-300">
+                          {challenge.impact}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "comparison":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-purple-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-4">
+              {slide.content.comparisons.map(
+                (comparison: any, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                      <CardContent className="grid grid-cols-4 gap-4 items-center">
+                        <div>
+                          <h3 className="text-base font-bold text-white">
+                            {comparison.feature}
+                          </h3>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-green-500 font-semibold">
+                            {comparison.ourApp}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-400">
+                            {comparison.competitors}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <Badge
+                            variant="outline"
+                            className="text-xs bg-gray-800 text-gray-300"
+                          >
+                            {comparison.advantage}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )
+              )}
+            </div>
+          </div>
+        );
+
+      case "scalability":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-cyan-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.aspects.map((aspect: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-lg font-bold text-cyan-400">
+                        {aspect.title}
+                      </h3>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-400">
+                            Current:
+                          </span>
+                          <span className="text-sm font-semibold text-gray-300">
+                            {aspect.current}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-400">Target:</span>
+                          <span className="text-sm font-semibold text-blue-400">
+                            {aspect.target}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="bg-gray-800/50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-300">
+                          {aspect.approach}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "future":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-indigo-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.enhancements.map(
+                (enhancement: any, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.15 }}
+                  >
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                      <CardContent className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-2">
+                            <h3 className="text-lg font-bold text-white">
+                              {enhancement.title}
+                            </h3>
+                            <p className="text-base text-gray-400">
+                              {enhancement.description}
+                            </p>
+                            <p className="text-sm text-indigo-400 font-semibold">
+                              Impact: {enhancement.impact}
+                            </p>
+                          </div>
+                          <div className="text-right space-y-2">
+                            <Badge
+                              variant={
+                                enhancement.priority === "High"
+                                  ? "destructive"
+                                  : enhancement.priority === "Medium"
+                                  ? "default"
+                                  : "secondary"
+                              }
+                              className="text-sm px-3 py-1"
+                            >
+                              {enhancement.priority} Priority
+                            </Badge>
+                            <p className="text-sm text-gray-400">
+                              {enhancement.timeline}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )
+              )}
+            </div>
+          </div>
+        );
+
+      case "screenshots":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-indigo-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="flex flex-col gap-8 w-full">
+              {/* Image 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("../assets/shan1.jpg")}
+                      alt={slide.content.image1.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {slide.content.image1.caption}
+                  </h3>
+                  <p className="text-gray-400"></p>
+                </div>
+              </motion.div>
+
+              {/* Image 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan2.jpg")}
+                      alt={slide.content.image2.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {slide.content.image2.caption}
+                  </h3>
+                  <p className="text-gray-400"></p>
+                </div>
+              </motion.div>
+
+              {/* Image 3 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan3.jpg")}
+                      alt={slide.content.image3.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {slide.content.image3.caption}
+                  </h3>
+                  <p className="text-gray-400"></p>
+                </div>
+              </motion.div>
+
+              {/* Image 4 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan4.jpg")}
+                      alt={slide.content.image4.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {slide.content.image4.caption}
+                  </h3>
+                  <p className="text-gray-400"></p>
+                </div>
+              </motion.div>
+
+              {/* Image 5 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden w-full bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                  <CardContent className="p-0">
+                    <Image
+                      src={require("@/assets/shan5.jpg")}
+                      alt={slide.content.image5.caption}
+                      className="w-full h-[600px] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {slide.content.image5.caption}
+                  </h3>
+                  <p className="text-gray-400"></p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        );
+
+      case "keywords":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-blue-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.terms.map((term: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-blue-400">
+                        {term.term}
+                      </h3>
+                      <p className="text-base text-gray-300">
+                        {term.definition}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "lessons":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-orange-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-8">
+              {slide.content.lessons.map((lesson: any, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <Card className="p-6 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                    <CardContent className="space-y-4">
+                      <h3 className="text-xl font-bold text-orange-400">
+                        {lesson.category}
+                      </h3>
+                      <ul className="space-y-2">
+                        {lesson.insights.map(
+                          (insight: string, insightIndex: number) => (
+                            <li
+                              key={insightIndex}
+                              className="flex items-start space-x-2"
+                            >
+                              <Lightbulb className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                              <span className="text-base text-gray-300">
+                                {insight}
+                              </span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "conclusion":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-green-900/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              {slide.content.achievements.map(
+                (achievement: string, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <Card className="p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-300 bg-gray-900/80 backdrop-blur-sm">
+                      <CardContent className="flex items-center space-x-4">
+                        <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
+                        <p className="text-base text-gray-300">{achievement}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )
+              )}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mt-8 p-6 bg-blue-900/50 rounded-lg backdrop-blur-sm"
+            >
+              <p className="text-base text-gray-300 italic font-medium">
+                {slide.content.impact}
+              </p>
+            </motion.div>
+          </div>
+        );
+
+      case "thanks":
+        return (
+          <div className="text-center space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-6"
+            >
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                {slide.title}
+              </h1>
+              <p className="text-2xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="grid grid-cols-2 gap-8"
+            >
+              <Card className="p-6 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-blue-400">
+                    Project Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-left">
+                  <p className="text-base text-gray-300">
+                    <strong>University:</strong>{" "}
+                    {slide.content.contact.university}
+                  </p>
+                  <p className="text-base text-gray-300">
+                    <strong>Department:</strong>{" "}
+                    {slide.content.contact.department}
+                  </p>
+                  <p className="text-base text-gray-300">
+                    <strong>Supervisor:</strong>{" "}
+                    {slide.content.contact.supervisor}
+                  </p>
+                  <p className="text-base text-gray-300">
+                    <strong>Year:</strong> {slide.content.contact.year}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="p-6 bg-gray-900/80 backdrop-blur-sm border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-400">
+                    Acknowledgments
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-left">
+                  {slide.content.acknowledgments.map(
+                    (ack: string, index: number) => (
+                      <div key={index} className="flex items-start space-x-2">
+                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-gray-300">{ack}</span>
+                      </div>
+                    )
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex justify-center space-x-4"
+            >
+              <Rocket className="w-12 h-12 text-blue-400" />
+              <Brain className="w-12 h-12 text-purple-400" />
+              <Smartphone className="w-12 h-12 text-green-400" />
+            </motion.div>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-white">{slide.title}</h2>
+              <p className="text-xl text-gray-300">{slide.subtitle}</p>
+              <div className="bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm">
+                <p className="text-base text-gray-300">{slide.description}</p>
+              </div>
+            </motion.div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative overflow-hidden">
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={particlesOptions}
+      />
+
+      {/* Navigation */}
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="flex items-center space-x-4 bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-gray-200 dark:border-gray-700">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={prevSlide}
+            className="rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+
+          <div className="flex space-x-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentSlide
+                    ? "bg-blue-500 dark:bg-blue-400 scale-125"
+                    : "bg-gray-400 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500"
+                }`}
+              />
+            ))}
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={nextSlide}
+            className="rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </Button>
+
+          <Button
+            variant={isAutoPlay ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsAutoPlay(!isAutoPlay)}
+            className="ml-4 text-gray-700 dark:text-gray-300"
+          >
+            {isAutoPlay ? "Pause" : "Auto"}
+          </Button>
+        </div>
+      </div>
+
+      {/* Slide Counter */}
+      <div className="fixed top-4 right-6 z-50">
+        <div className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-gray-200 dark:border-gray-700">
+          <span className="text-base font-semibold text-gray-700 dark:text-gray-300">
+            {currentSlide + 1} / {slides.length}
+          </span>
+        </div>
+      </div>
+
+      {/* Theme Toggle */}
+      <div className="fixed top-4 left-6 z-50">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleTheme}
+          className="rounded-full bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg border border-gray-200 dark:border-gray-700"
+        >
+          {darkMode ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-gray-700" />
+          )}
+        </Button>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-8 py-24 relative z-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-[80vh] flex items-center justify-center"
+          >
+            {renderSlideContent(slides[currentSlide])}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}

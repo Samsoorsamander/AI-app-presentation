@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
@@ -66,7 +66,14 @@ const slides = [
       "Our project addresses the growing need for unified AI experiences on mobile platforms. We've achieved remarkable performance metrics including sub-500ms response times and 4.6/5 user satisfaction rating across both iOS and Android platforms.",
     content: {
       stats: [
-        { label: "Response Time", value: "<500ms", icon: Zap },
+        { label: "Natural Language processisng", value: "Chat", icon: Zap },
+        { label: "Image generation", value: "Image", icon: Zap },
+        { label: "Image Analysis", value: "Image Analysis", icon: Zap },
+        {
+          label: "SQLite for local storage",
+          value: "Offline access",
+          icon: Zap,
+        },
         { label: "User Satisfaction", value: "4.6/5", icon: Star },
         { label: "Platform Support", value: "iOS & Android", icon: Smartphone },
         { label: "AI Models", value: "3 Integrated", icon: Brain },
@@ -343,17 +350,16 @@ const slides = [
       steps: [
         {
           step: 1,
-          title: "Authentication",
-          description: "Clerk security validation",
-          icon: Shield,
-        },
-        {
-          step: 2,
           title: "User Input",
           description: "Text or image prompt submission",
           icon: Users,
         },
-
+        {
+          step: 2,
+          title: "Authentication",
+          description: "Clerk security validation",
+          icon: Shield,
+        },
         {
           step: 3,
           title: "AI Processing",
@@ -503,15 +509,6 @@ const slides = [
     content: {
       providers: [
         {
-          name: "OpenAI GPT-4",
-          capabilities: [
-            "Natural language processing",
-            "Code generation",
-            "Creative writing",
-          ],
-          use_case: "General conversational AI and text generation",
-        },
-        {
           name: "Google Gemini",
           capabilities: [
             "Multimodal understanding",
@@ -519,6 +516,15 @@ const slides = [
             "Context awareness",
           ],
           use_case: "Complex reasoning and multimodal interactions",
+        },
+        {
+          name: "OpenAI GPT-4",
+          capabilities: [
+            "Natural language processing",
+            "Code generation",
+            "Creative writing",
+          ],
+          use_case: "General conversational AI and text generation",
         },
         {
           name: "Stability AI",
@@ -595,19 +601,6 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   // Log DB path for debugging
   // console.log('Log DB path for debugging: ', FileSystem.documentDirectory);
 
-  const DATABASE_VERSION = 1;
-  let result = await db.getFirstAsync<{ user_version: number }>(
-    'PRAGMA user_version'
-  );
-
-  let currentDbVersion = result?.user_version ?? 0;
-
-  if (currentDbVersion >= DATABASE_VERSION) {
-    return;
-  }
-  if (currentDbVersion === 0) {
-    const result = await db.execAsync(\`
-PRAGMA journal_mode = 'wal';
  
 CREATE TABLE chats (
   id INTEGER PRIMARY KEY NOT NULL, 
@@ -1230,79 +1223,72 @@ const AuthenticatedApp = () => {
   },
   {
     id: 27,
-    title: "Project Impact",
-    subtitle: "Achievements and Recognition",
-    type: "impact",
+    title: "Keywords and Abbreviations",
+    subtitle: "Technical Terms and Definitions",
+    type: "keywords",
     description:
-      "Our project has demonstrated significant impact in terms of technical innovation, user satisfaction, and potential for real-world application. The results validate our approach and design decisions.",
+      "This slide provides definitions for key technical terms and abbreviations used throughout our presentation to ensure clarity and understanding for all audience members.",
     content: {
-      achievements: [
+      terms: [
         {
-          category: "Technical Excellence",
-          items: [
-            "Successfully integrated 3 major AI providers",
-            "Achieved sub-500ms response times consistently",
-            "Implemented secure, scalable authentication system",
-            "Created efficient offline functionality",
-          ],
+          term: "AI",
+          definition:
+            "Artificial Intelligence - Systems that mimic human intelligence",
         },
         {
-          category: "User Impact",
-          items: [
-            "4.6/5 average user satisfaction rating",
-            "100% of users would recommend the app",
-            "85% reduction in task completion time",
-            "Positive feedback on interface design",
-          ],
+          term: "NLP",
+          definition:
+            "Natural Language Processing - AI's ability to understand and generate human language",
         },
         {
-          category: "Innovation",
-          items: [
-            "Novel multi-AI integration approach",
-            "Optimized mobile AI interaction patterns",
-            "Efficient offline-first architecture",
-            "Seamless cross-platform experience",
-          ],
+          term: "SQLite",
+          definition:
+            "Lightweight, serverless relational database management system",
+        },
+        {
+          term: "API",
+          definition:
+            "Application Programming Interface - Set of protocols for building software applications",
+        },
+        {
+          term: "TOPS",
+          definition:
+            "Tera Operations Per Second - Measure of AI processor performance",
+        },
+        {
+          term: "CDN",
+          definition:
+            "Content Delivery Network - Geographically distributed network of proxy servers",
+        },
+        {
+          term: "JWT",
+          definition:
+            "JSON Web Token - Compact URL-safe means of representing claims between parties",
+        },
+        {
+          term: "OAuth",
+          definition:
+            "Open standard for access delegation, commonly used for token-based authentication",
         },
       ],
     },
   },
   {
     id: 28,
-    title: "Lessons Learned",
-    subtitle: "Key Insights from Development",
-    type: "lessons",
+    title: "Application Demo",
+    subtitle: "Live Demonstration of Key Features",
+    type: "demo",
     description:
-      "Throughout the development process, we gained valuable insights about mobile AI development, team collaboration, and project management. These lessons will guide our future development efforts.",
+      "Watch our AI Assistant in action showcasing conversation, image generation, and offline capabilities.",
     content: {
-      lessons: [
-        {
-          category: "Technical Lessons",
-          insights: [
-            "API integration requires robust error handling and fallback mechanisms",
-            "Mobile performance optimization is crucial for AI applications",
-            "Local storage strategy significantly impacts user experience",
-            "Cross-platform development requires careful attention to platform differences",
-          ],
-        },
-        {
-          category: "Project Management",
-          insights: [
-            "Regular testing throughout development prevents major issues",
-            "User feedback early in development guides better design decisions",
-            "Clear communication channels are essential for team coordination",
-            "Agile methodology works well for AI application development",
-          ],
-        },
-        {
-          category: "User Experience",
-          insights: [
-            "Response time is more important than feature richness",
-            "Offline functionality is highly valued by users",
-            "Simple, intuitive interfaces perform better than complex ones",
-            "Consistent behavior across platforms builds user trust",
-          ],
-        },
+      videoPath: "/demo.mp4", // Make sure demo.mp4 is in your public folder
+      features: [
+        "Natural language conversation",
+        "Image generation from text",
+        "Offline chat history",
+        "Cross-platform support",
+        "Secure authentication",
+        "Real-time responses",
       ],
     },
   },
@@ -1354,6 +1340,18 @@ const AuthenticatedApp = () => {
 export default function AIAssistantPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Handle video autoplay when slide changes
+  useEffect(() => {
+    if (slides[currentSlide].type === "demo" && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current
+        .play()
+        .catch((e) => console.log("Autoplay prevented:", e));
+    }
+  }, [currentSlide]);
 
   useEffect(() => {
     if (isAutoPlay) {
@@ -2885,7 +2883,7 @@ export default function AIAssistantPresentation() {
             </div>
           </div>
         );
-      case "impact":
+      case "keywords":
         return (
           <div className="space-y-10">
             <motion.div
@@ -2898,95 +2896,27 @@ export default function AIAssistantPresentation() {
                 {slide.title}
               </h2>
               <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              <div className="bg-yellow-50 p-4 rounded-lg">
+              <div className="bg-blue-50 p-4 rounded-lg">
                 <p className="text-base text-gray-700">{slide.description}</p>
               </div>
             </motion.div>
 
-            <div className="space-y-8">
-              {slide.content.achievements.map(
-                (achievement: any, index: number) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                  >
-                    <Card className="p-6 hover:shadow-xl transition-all duration-300">
-                      <CardContent className="space-y-4">
-                        <h3 className="text-xl font-bold text-yellow-600">
-                          {achievement.category}
-                        </h3>
-                        <ul className="space-y-2">
-                          {achievement.items.map(
-                            (item: string, itemIndex: number) => (
-                              <li
-                                key={itemIndex}
-                                className="flex items-start space-x-2"
-                              >
-                                <Award className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                                <span className="text-base text-gray-700">
-                                  {item}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )
-              )}
-            </div>
-          </div>
-        );
-
-      case "lessons":
-        return (
-          <div className="space-y-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center space-y-4"
-            >
-              <h2 className="text-4xl font-bold text-gray-800">
-                {slide.title}
-              </h2>
-              <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <p className="text-base text-gray-700">{slide.description}</p>
-              </div>
-            </motion.div>
-
-            <div className="space-y-8">
-              {slide.content.lessons.map((lesson: any, index: number) => (
+            <div className="grid grid-cols-2 gap-6">
+              {slide.content.terms.map((term: any, index: number) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
                   <Card className="p-6 hover:shadow-xl transition-all duration-300">
-                    <CardContent className="space-y-4">
-                      <h3 className="text-xl font-bold text-orange-600">
-                        {lesson.category}
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-blue-600">
+                        {term.term}
                       </h3>
-                      <ul className="space-y-2">
-                        {lesson.insights.map(
-                          (insight: string, insightIndex: number) => (
-                            <li
-                              key={insightIndex}
-                              className="flex items-start space-x-2"
-                            >
-                              <Lightbulb className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                              <span className="text-base text-gray-700">
-                                {insight}
-                              </span>
-                            </li>
-                          )
-                        )}
-                      </ul>
+                      <p className="text-base text-gray-700">
+                        {term.definition}
+                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -2994,7 +2924,73 @@ export default function AIAssistantPresentation() {
             </div>
           </div>
         );
+      case "demo":
+        return (
+          <div className="space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-4xl font-bold text-gray-800">
+                {slide.title}
+              </h2>
+              <p className="text-xl text-gray-600">{slide.subtitle}</p>
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-base text-gray-700">{slide.description}</p>
+              </div>
+            </motion.div>
 
+            <div className="flex flex-col items-center space-y-8">
+              {/* Video Player with Controls */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="w-full max-w-4xl bg-black rounded-xl overflow-hidden shadow-xl"
+              >
+                <video
+                  ref={videoRef}
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                  className="w-full h-full"
+                >
+                  <source src={slide.content.videoPath} type="video/mp4" />
+                  Your browser doesn't support HTML5 video.
+                </video>
+              </motion.div>
+
+              {/* Features Grid */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="grid grid-cols-2 gap-4 w-full max-w-4xl"
+              >
+                {slide.content.features.map(
+                  (feature: string, index: number) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
+                    >
+                      <Card className="hover:shadow-md transition-all duration-200 h-full">
+                        <CardContent className="flex items-center p-4 space-x-3">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <p className="text-gray-700">{feature}</p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  )
+                )}
+              </motion.div>
+            </div>
+          </div>
+        );
       case "conclusion":
         return (
           <div className="space-y-10">
