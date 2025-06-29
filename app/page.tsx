@@ -74,7 +74,7 @@ const slides = [
           value: "Offline access",
           icon: Zap,
         },
-        { label: "User Satisfaction", value: "4.6/5", icon: Star },
+        // { label: "User Satisfaction", value: "4.6/5", icon: Star },
         { label: "Platform Support", value: "iOS & Android", icon: Smartphone },
         { label: "AI Models", value: "3 Integrated", icon: Brain },
       ],
@@ -153,8 +153,8 @@ const slides = [
             "Achieve Image generation",
             "Achieve Image analysis",
             "Offline History access",
-            "Achieve <500ms response time for text generation",
-            "Maintain <4MB model footprint for mobile deployment",
+            // "Achieve <500ms response time for text generation",
+            // "Maintain <4MB model footprint for mobile deployment",
             "Support 1,000+ concurrent user sessions",
           ],
         },
@@ -162,7 +162,6 @@ const slides = [
           category: "Technical Objectives",
           goals: [
             "Implement Clerk authentication",
-            "Ensure 99.5% uptime for core services",
             "Cross-platform compatibility (iOS 18+/Android 15+)",
           ],
         },
@@ -171,7 +170,7 @@ const slides = [
           goals: [
             "Score >4.5/5 in usability testing",
             "Achieve <15 second first-time setup",
-            "Support 10+ languages by default",
+            "Support many languages by default",
           ],
         },
       ],
@@ -350,15 +349,15 @@ const slides = [
       steps: [
         {
           step: 1,
-          title: "User Input",
-          description: "Text or image prompt submission",
-          icon: Users,
-        },
-        {
-          step: 2,
           title: "Authentication",
           description: "Clerk security validation",
           icon: Shield,
+        },
+        {
+          step: 2,
+          title: "User Input",
+          description: "Text or image prompt submission",
+          icon: Users,
         },
         {
           step: 3,
@@ -423,7 +422,7 @@ const slides = [
         },
         {
           title: "Feedback",
-          description: "Clear visual and haptic feedback",
+          description: "Clear visual",
           icon: MessageSquare,
         },
       ],
@@ -770,26 +769,22 @@ const AuthenticatedApp = () => {
         {
           type: "Unit Testing",
           description: "Individual component and function testing",
-          tools: ["Jest", "React Native Testing Library"],
-          coverage: "85%",
+          tools: ["React Native Testing Library"],
         },
         {
           type: "Integration Testing",
           description: "API integration and data flow testing",
           tools: ["Manual testing"],
-          coverage: "78%",
         },
         {
           type: "User Acceptance Testing",
           description: "Real user testing with 20 participants",
-          tools: ["Manual testing", "User feedback forms"],
-          coverage: "100%",
+          tools: ["Manual testing"],
         },
         {
           type: "Performance Testing",
           description: "Response time and memory usage testing",
           tools: ["React Native Performance"],
-          coverage: "90%",
         },
       ],
     },
@@ -837,7 +832,7 @@ const AuthenticatedApp = () => {
           component: "Multilingual Input",
           testCase: "Process prompts in multiple languages",
           status: "✅ Passed",
-          details: "10+ languages supported",
+          details: "",
         },
       ],
     },
@@ -879,13 +874,13 @@ const AuthenticatedApp = () => {
           percentage: 78,
           improvement: "22% better than target",
         },
-        {
-          label: "Battery Efficiency",
-          target: "8hrs",
-          achieved: "9.2hrs",
-          percentage: 87,
-          improvement: "15% better than target",
-        },
+        // {
+        //   label: "Battery Efficiency",
+        //   target: "8hrs",
+        //   achieved: "9.2hrs",
+        //   percentage: 87,
+        //   improvement: "15% better than target",
+        // },
         {
           label: "System Uptime",
           target: "99.5%",
@@ -1000,18 +995,17 @@ const AuthenticatedApp = () => {
         },
         {
           title: "Secure Authentication",
-          description:
-            "Multi-factor authentication with Clerk providing enterprise-grade security",
+          description: "Authentication with Clerk",
           icon: Shield,
-          details: ["OAuth integration", "Social logins", "Session management"],
+          details: ["login", "sign up", "Session management"],
         },
-        {
-          title: "Real-time Responses",
-          description:
-            "Sub-500ms response times for optimal user experience and engagement",
-          icon: Zap,
-          details: ["Optimized APIs", "Efficient caching", "Smart preloading"],
-        },
+        // {
+        //   title: "Real-time Responses",
+        //   description:
+        //     "Sub-500ms response times for optimal user experience and engagement",
+        //   icon: Zap,
+        //   details: ["Optimized APIs", "Efficient caching", "Smart preloading"],
+        // },
       ],
     },
   },
@@ -1132,12 +1126,6 @@ const AuthenticatedApp = () => {
           target: "Cloud sync with local caching",
           approach: "Hybrid storage strategy",
         },
-        {
-          title: "Geographic Scalability",
-          current: "Single region deployment",
-          target: "Multi-region with CDN",
-          approach: "Edge computing integration",
-        },
       ],
     },
   },
@@ -1181,13 +1169,13 @@ const AuthenticatedApp = () => {
           timeline: "Q1 2026",
           impact: "Privacy and performance",
         },
-        {
-          title: "Collaborative Features",
-          description: "Shared conversations and team workspaces",
-          priority: "Low",
-          timeline: "Q2 2026",
-          impact: "Team productivity",
-        },
+        // {
+        //   title: "Collaborative Features",
+        //   description: "Shared conversations and team workspaces",
+        //   priority: "Low",
+        //   timeline: "Q2 2026",
+        //   impact: "Team productivity",
+        // },
       ],
     },
   },
@@ -2756,9 +2744,7 @@ export default function AIAssistantPresentation() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {slide.content.image1.caption}
                   </h3>
-                  <p className="text-gray-600">
-                    Detailed description about this screenshot and its features.
-                  </p>
+                  <p className="text-gray-600"></p>
                 </div>
               </motion.div>
 
@@ -2782,9 +2768,7 @@ export default function AIAssistantPresentation() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {slide.content.image2.caption}
                   </h3>
-                  <p className="text-gray-600">
-                    Detailed description about this screenshot and its features.
-                  </p>
+                  <p className="text-gray-600"></p>
                 </div>
               </motion.div>
 
@@ -2808,9 +2792,7 @@ export default function AIAssistantPresentation() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {slide.content.image3.caption}
                   </h3>
-                  <p className="text-gray-600">
-                    Detailed description about this screenshot and its features.
-                  </p>
+                  <p className="text-gray-600"></p>
                 </div>
               </motion.div>
 
@@ -2834,9 +2816,7 @@ export default function AIAssistantPresentation() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {slide.content.image4.caption}
                   </h3>
-                  <p className="text-gray-600">
-                    Detailed description about this screenshot and its features.
-                  </p>
+                  <p className="text-gray-600"></p>
                 </div>
               </motion.div>
 
@@ -2860,9 +2840,7 @@ export default function AIAssistantPresentation() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {slide.content.image5.caption}
                   </h3>
-                  <p className="text-gray-600">
-                    Detailed description about this screenshot and its features.
-                  </p>
+                  <p className="text-gray-600"></p>
                 </div>
               </motion.div>
             </div>
