@@ -1117,7 +1117,7 @@ const AuthenticatedApp = () => {
         {
           title: "Feature Scalability",
           current: "Text & Image AI",
-          target: "Voice, Video, Code generation",
+          target: "Voice, Video",
           approach: "Modular plugin architecture",
         },
         {
@@ -1155,11 +1155,25 @@ const AuthenticatedApp = () => {
           impact: "Seamless multi-device experience",
         },
         {
+          title: "Web based functionality",
+          description: "working in both Mobile and web",
+          priority: "High",
+          timeline: "Q3 2025",
+          impact: "responsive",
+        },
+        {
           title: "Advanced Multilingual Support",
-          description: "Support for 25+ languages with real-time translation",
+          description: "Support for many languages with real-time translation",
           priority: "Medium",
           timeline: "Q4 2025",
           impact: "Global accessibility",
+        },
+        {
+          title: "MFA ( Multi Factor Authanticaton)",
+          description: "Insure more secure authantication",
+          priority: "Medium",
+          timeline: "Q4 2025",
+          impact: "Security",
         },
         {
           title: "On-device AI Processing",
